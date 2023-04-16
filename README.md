@@ -1,4 +1,4 @@
-# TheColdCrawler
+# The_Cold_CrawlerV1
 
 Written with Python 3
 
@@ -8,7 +8,7 @@ This program does not utilize beautifulsoup - it uses requests in conjuction wit
 
 User inputs the desired URL and desired file name
 
-TheColdCrawler prints the results to the terminal and creates a text file with the results
+The_Cold_Crawler prints the results to the terminal and creates a text file with the results
 
 Weston Spiro 2022
 
