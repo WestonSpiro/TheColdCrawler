@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+#TheColdCrawler by Weston Spiro
+#User inputs url & file name
+#TheColdCrawler returns all phone numbers and email address detected on the page
+import requests
+import re
+import os
+print("Welcome to The_Cold_Crawler!")
+print("Press Ctrl + C to quit program.")
+while True:
+    url = input("Please Enter Url: ")
+    file_name = input("Please Enter File Name: ")
+    res0 = requests.get(url)
+    if res0.status_code == 200:
+        print("Connection Established!")
+    else:
+        print("Currently Experiencing Connection Errors\n Please Try Again")
+        pass
+
+    res0 = str(res0.text)
+
+    file = open(file_name, 'w')
+    file.write(file_name)
+    file.write("\n")
+    file.write(url)
+    file.write("\n")
+    file.close()
+
+#Phone Number Extraction
+#Returns numbers in the following format:
+#[xxxxxxxxxx]
+    res0 = requests.get(url)
+    res0 = str(res0.text)
+    res0 = re.findall(r"[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]", res0)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res0))
+    file.close()
+#Returns numbers in the following format:
+#['+ 1-xxx-xxxxxxx', '++1-xxx-xxxxxxx']
+    res1 = requests.get(url)
+    res1 = str(res1.text)
+    res1 = re.findall(r"[+]\W\d\W[0-9][0-9][0-9]\W[0-9][0-9][0-9]\S\S\S\S", res1)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res1))
+    file.close()
+#Returns numbers in the following format:
+#['xxx xxx xxxx']
+#Discovered number not listed on page or in source
+    res2 = requests.get(url)
+    res2 = str(res2.text)
+    res2 = re.findall(r"[0-9][0-9][0-9]\D[0-9][0-9][0-9]\D[0-9][0-9][0-9][0-9]", res2)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res2))
+    file.close()
+#Returns numbers in the following format:
+#xxx.xxx.xxxx
+#Also discovered number not listed on page or in source
+    res3 = requests.get(url)
+    res3 = str(res3.text)
+    res3 = re.findall(r"[0-9][0-9][0-9]\.[0-9][0-9][0-9]\.[0-9][0-9][0-9][0-9]", res3)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res3))
+    file.close()
+#Returns numbers in the following format:
+#(xxx) xxx-xxxx
+    res4 = requests.get(url)
+    res4 = str(res4.text)
+    res4 = re.findall(r"\(\d+\)\W[0-9]+-[0-9]+", res4)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res4))
+    file.close()
+#Returns numbers in the following format:
+#xxx-xxx-xxxx ext. xxx
+    res5 = requests.get(url)
+    res5 = str(res5.text)
+    res5 = re.findall(r"[0-9][0-9][0-9]\-[0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9].ext\..[0-9]+", res5)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res5))
+    file.close()
+#Returns numbers in the following format:
+#xxx-xxx-xxxx x###
+    res6 = requests.get(url)
+    res6 = str(res6.text)
+    res6 = re.findall(r"[0-9][0-9][0-9]\-[0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9].x.[0-9]+", res6)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res6))
+    file.close()
+#Returns numbers in the following format:
+#xxx-xxx-####x###
+    res7 = requests.get(url)
+    res7 = str(res7.text)
+    res7 = re.findall(r"[0-9][0-9][0-9]\-[0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]x[0-9]+", res7)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res7))
+    file.close()
+#Email Extraction
+#Returns emails in the following format:
+#['xxx@xxx.net']
+    res8 = requests.get(url)
+    res8 = str(res8.text)
+    res8 = re.findall(r"[a-zA-z0-9!#\$%&'\*\+-/=?\^_`{|}~]+@[a-zA-z0-9]+\.[a-zA-Z]+", res8)
+    file = open(file_name, 'a')
+    file.write("\n")
+    file.write(str(res8))
+    file.close()
+    print(file_name + " Created!")
