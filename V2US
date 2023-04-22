@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+# The_Cold_Crawler_V2
+# Weston Spiro 2023
+import re
+import requests
+from bs4 import BeautifulSoup
+import tkinter as tk
+from tkinter import filedialog
+
+# Regular expression to match US phone numbers
+phone_regex = r"\b(?:\+1\s*(?:\d\s*){10}|\d{3}[-.\s]?\d{3}[-.\s]?\d{4})\b"
+
+# Function to extract email addresses and phone numbers from a webpage
+def extract_data(url):
+    # Retrieve the HTML content of the webpage
+    response = requests.get(url)
+
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.content, "html.parser")
+
+    # Extract all the email addresses using regular expressions
+    emails = re.findall(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", str(soup))
+
+    # Extract all the phone numbers using regular expressions
+    phone_numbers = re.findall(phone_regex, str(soup))
+
+    return (emails, phone_numbers)
+
+# Function to write the extracted data to a file
+def write_to_file(output_file, data):
+    with open(output_file, "w") as f:
+        f.write("Email Addresses:\n")
+        for email in data[0]:
+            f.write(email + "\n")
+
+        f.write("\nPhone Numbers:\n")
+        for phone_number in data[1]:
+            f.write(phone_number + "\n")
+
+    print("The email addresses and phone numbers have been written to " + output_file)
+
+# Function to handle the button click event
+def process_data():
+    url = url_entry.get()
+    output_file = filedialog.asksaveasfilename(defaultextension=".txt")
+
+    if output_file:
+        data = extract_data(url)
+        write_to_file(output_file, data)
+
+# Create the GUI window
+window = tk.Tk()
+window.title("Web Scraper")
+
+# Create the URL label and entry field
+url_label = tk.Label(window, text="Enter the URL of the webpage:")
+url_label.pack()
+url_entry = tk.Entry(window)
+url_entry.pack()
+
+# Create the Process button
+process_button = tk.Button(window, text="Process", command=process_data)
+process_button.pack()
+
+quit_button = tk.Button(window, text="Quit", command=window.destroy)
+quit_button.pack()
+
+bot_label = tk.Label(window, text="Weston Spiro 2023")
+bot_label.pack()
+
+# Run the GUI loop
+window.mainloop()
